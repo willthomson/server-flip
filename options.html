@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Server Flip settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <h1>Server Flip</h1>
+        <p class="standfirst">
+          Set the two origins you bounce between. Everything after the origin – path,
+          query string, hash – is carried across untouched.
+        </p>
+      </header>
+
+      <form id="settings" novalidate>
+        <div class="field field--staging">
+          <div class="field__head">
+            <span class="chip chip--staging" aria-hidden="true">S</span>
+            <label for="staging">Staging</label>
+          </div>
+          <input
+            id="staging"
+            name="staging"
+            type="text"
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="staging.example.dev"
+            aria-describedby="staging-note"
+          />
+          <p class="note" id="staging-note">Assumes https:// unless you say otherwise.</p>
+        </div>
+
+        <div class="field field--local">
+          <div class="field__head">
+            <span class="chip chip--local" aria-hidden="true">L</span>
+            <label for="local">Local</label>
+          </div>
+          <input
+            id="local"
+            name="local"
+            type="text"
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="localhost:4007"
+            aria-describedby="local-note"
+          />
+          <p class="note" id="local-note">Assumes http:// for localhost. Include the port.</p>
+        </div>
+
+        <section class="preview" aria-labelledby="preview-title">
+          <h2 id="preview-title" class="eyebrow">What a flip looks like</h2>
+          <div class="preview__pair" id="preview" aria-live="polite">
+            <p class="wire wire--staging">
+              <span class="wire__origin" data-slot="staging-origin">—</span
+              ><span class="wire__path" data-slot="path"></span>
+            </p>
+            <p class="wire__hinge" aria-hidden="true">⇅</p>
+            <p class="wire wire--local">
+              <span class="wire__origin" data-slot="local-origin">—</span
+              ><span class="wire__path" data-slot="path"></span>
+            </p>
+          </div>
+        </section>
+
+        <div class="actions">
+          <button type="submit" class="btn btn--primary">Save settings</button>
+          <button type="button" class="btn btn--quiet" id="shortcut">Change the keyboard shortcut</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </form>
+
+      <footer class="colophon">
+        <p>
+          Click the toolbar icon to flip. The badge reads
+          <span class="chip chip--staging chip--inline">S</span> on staging and
+          <span class="chip chip--local chip--inline">L</span> on local, so you always know
+          where you are. On any other site the icon does nothing.
+        </p>
+      </footer>
+    </main>
+
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
