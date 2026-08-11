@@ -11,8 +11,9 @@
       <header class="masthead">
         <h1>Server Flip</h1>
         <p class="standfirst">
-          Set the two origins you bounce between. Everything after the origin – path,
-          query string, hash – is carried across untouched.
+          Server Flip learns your projects as you use it, and these two fields act as the
+          fallback pair. Everything after the origin – path, query string, hash – is carried
+          across untouched.
         </p>
       </header>
 
@@ -66,6 +67,17 @@
               ><span class="wire__path" data-slot="path"></span>
             </p>
           </div>
+        </section>
+
+        <section class="learned" aria-labelledby="learned-title">
+          <h2 id="learned-title" class="eyebrow">Learnt projects</h2>
+          <p class="note note--learned">
+            Click the toolbar icon on a staging page, then on the same project locally, and the
+            pair is learnt automatically from the page's canonical URL – no typing needed. The
+            fields above act as a fallback for anything without a canonical tag.
+          </p>
+          <ul class="learned__list" id="learned-list"></ul>
+          <p class="note learned__empty" id="learned-empty">Nothing learnt yet.</p>
         </section>
 
         <div class="actions">

@@ -1,9 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Server Flip",
-  "version": "1.0.0",
-  "description": "One click to bounce the current page between your staging and local dev servers, keeping the path and query string.",
-  "permissions": ["tabs", "storage"],
+  "version": "1.1.0",
+  "description": "One click to bounce the current page between staging and local dev servers. Learns your projects from their canonical URLs.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "scripting",
+    "activeTab"
+  ],
   "background": {
     "service_worker": "background.js",
     "type": "module"

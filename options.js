@@ -106,4 +106,63 @@ shortcutButton.addEventListener('click', () => {
   chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
 });
 
+/* ---- Learnt projects ---- */
+
+const learnedList = document.querySelector('#learned-list');
+const learnedEmpty = document.querySelector('#learned-empty');
+
+function sideSpan(cls, value, placeholder) {
+  const span = document.createElement('span');
+  if (value) {
+    span.className = cls;
+    span.textContent = value;
+  } else {
+    span.className = `${cls} learned__side--missing`;
+    span.textContent = placeholder;
+  }
+  return span;
+}
+
+async function renderLearned() {
+  const { learned = {} } = await chrome.storage.sync.get({ learned: {} });
+  const entries = Object.entries(learned).reverse(); // newest first
+  learnedList.replaceChildren();
+  learnedEmpty.hidden = entries.length > 0;
+
+  for (const [key, pair] of entries) {
+    const item = document.createElement('li');
+    item.className = 'learned__item';
+
+    const name = document.createElement('span');
+    name.className = 'learned__key';
+    name.textContent = key;
+
+    const sides = document.createElement('span');
+    sides.className = 'learned__sides';
+    sides.append(
+      sideSpan('learned__side--s', pair?.staging, 'staging not learnt'),
+      document.createTextNode(' ⇄ '),
+      sideSpan('learned__side--l', pair?.local, 'local not learnt'),
+    );
+
+    const forget = document.createElement('button');
+    forget.type = 'button';
+    forget.className = 'learned__forget';
+    forget.textContent = 'Forget';
+    forget.addEventListener('click', async () => {
+      const { learned: current = {} } = await chrome.storage.sync.get({ learned: {} });
+      delete current[key];
+      await chrome.storage.sync.set({ learned: current });
+    });
+
+    item.append(name, sides, forget);
+    learnedList.append(item);
+  }
+}
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'sync' && 'learned' in changes) renderLearned();
+});
+
+renderLearned();
 load();

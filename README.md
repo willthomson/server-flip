@@ -24,9 +24,33 @@ staging, green **L** on local, nothing at all anywhere else.
 
 To reopen settings later: right-click the icon → **Options**.
 
-## Settings
+## Learning projects (no configuration)
 
-Two fields, both forgiving about what you paste in:
+Both your staging and local builds render a `<link rel="canonical">` pointing at the
+production hostname. Two different origins emitting the same canonical hostname are,
+by definition, the same project – so Server Flip uses that hostname as a key and
+learns pairs as you click:
+
+1. Click the icon on a staging page. The extension reads the canonical, stores the
+   staging origin under that project's key, and – if it already knows a local side
+   (learnt or from the fallback fields) – flips immediately. Otherwise the badge
+   shows `1/2`: half a pair learnt.
+2. Click it on the same project locally. Same canonical hostname, same key – the
+   local side is stored and the tab flips. From then on, one click works in either
+   direction, on every page of that project.
+
+Only the *hostname* of the canonical is used, never its path. Environments often
+disagree about the path in their canonical tags (one may include a section prefix
+the other omits); the production hostname is stable across both.
+
+Learnt pairs appear on the settings page with a Forget button each. When the same
+localhost port has served several projects, the most recently used project wins for
+the badge – and a click always re-reads the canonical, so the flip itself can't go
+to the wrong project.
+
+## Fallback settings
+
+Two fields for anything without a canonical tag, both forgiving about what you paste in:
 
 | You type | It stores |
 | --- | --- |
@@ -47,10 +71,14 @@ button on the settings page.
 
 ## Behaviour
 
-- On a matching origin: navigates the current tab to the other one.
-- On any other site: nothing happens, and the badge flashes `?` for a second so you
-  know the click registered.
-- Before you've configured anything: the click opens the settings page.
+- On a page with a canonical tag: identifies the project, learns/updates the pair,
+  and flips if it knows the other side.
+- First click on a brand-new project: badge flashes `1/2` – click once on the other
+  server to complete the pair.
+- On a page without a canonical: falls back to plain origin matching against learnt
+  pairs and the fallback fields.
+- On anything unrecognised: badge flashes `?` so you know the click registered.
+- Before anything is configured or learnt: the click opens the settings page.
 
 ## Sharing it with the team
 
@@ -64,12 +92,14 @@ through an admin policy.
 
 ## Permissions
 
-It asks for `tabs` and `storage`.
+It asks for `tabs`, `storage`, `scripting` and `activeTab`.
 
 Chrome will describe `tabs` as *"Read your browsing history"*, which sounds worse than
 it is – it's needed to read the current tab's URL so the badge can show which server
-you're on without you clicking first. The extension makes no network requests and
-sends nothing anywhere. All 300-odd lines are in front of you if you want to check.
+you're on without you clicking first. `scripting` + `activeTab` let the extension read
+the canonical tag of the page you clicked on – that one tab, at that one moment, only,
+and they add no install warning. The extension makes no network requests and sends
+nothing anywhere. The whole thing is small enough to read in one sitting.
 
 ## Files
 
@@ -83,11 +113,6 @@ icons/            Generated PNGs at 16/32/48/128
 
 ## Ideas if it earns its keep
 
-- **More than one pair.** Right now it's a single staging↔local mapping. Swapping
-  `staging`/`local` strings for an array of pairs, then matching the current origin
-  against every entry, would cover the whole monorepo. The matching logic in
-  `lib/origin.js` barely changes.
 - **A third environment.** Prod as well as staging would need a popup or a cycle order,
   since one click can only go one way.
-- **Port autodetect.** If your dev server port moves about, the extension could remember
-  the last localhost port you visited instead of hard-coding one.
+- **Export/import of learnt pairs**, for teams that want to share a starting set.
